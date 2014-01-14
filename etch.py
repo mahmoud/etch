@@ -40,6 +40,12 @@ Cons:
 import re
 from string import Formatter
 
+__version__ = '0.0.1'
+__author__ = 'Mahmoud Hashemi'
+__contact__ = 'mahmoudrhashemi@gmail.com'
+__url__ = 'https://github.com/mahmoud/etch'
+__license__ = 'BSD'
+
 
 _pos_farg_re = re.compile('({{)|'         # escaped open-brace
                           '(}})|'         # escaped close-brace
