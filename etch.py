@@ -32,6 +32,9 @@ Cons:
 - Many features are still fairly obscure
 - Few escaping functions suitable to certain applications (XML/HTML/JS escapes)
 - No loops or conditionals
+- Format fields give 'conversion' functions (i.e., repr() and str()), but no
+  mechanism for post-conversion processing (might have to be built-in to the
+  processor)
 """
 
 import re
@@ -186,6 +189,55 @@ class BaseFormatField(object):
 
     def __str__(self):
         return self.fstr
+
+
+class Etcher(object):
+    def __init__(self, tmpl_str, quoter=None, defaulter=None):
+        self.defaulter = defaulter or (lambda t: str(t))
+        if not callable(self.defaulter):
+            raise TypeError()
+        self.quoter = quoter or self._default_quoter
+        if not callable(self.quoter):
+            raise TypeError()
+        # self.getters = getters  # dict, handled at class level now
+
+        self.raw_tmpl_str = tmpl_str
+        self.tokens = tokenize_format_str(tmpl_str)
+        self.default_map = {}
+        self.quote_map = {}
+        for token in self.tokens:
+            try:
+                fspec = token.fspec
+                self.default_map[token] = self.defaulter(token)
+                self.quote_map[token] = self.quoter(token)
+                if not fspec:
+                    token.set_fspec('s')
+            except (KeyError, AttributeError):
+                # not a field or not a builtin field
+                pass
+        return
+
+    def format(self, *args, **kwargs):
+        ret = ''
+        for t in self.tokens:
+            try:
+                name = t.base_name
+            except AttributeError:
+                ret += t
+                continue
+            try:
+                if t.is_positional:
+                    seg = t.fstr.format(*args)
+                else:
+                    seg = t.fstr.format(**{name: kwargs[name]})
+                #if self.quote_map[t]:
+                #    seg = escape_str(seg)
+                ret += seg
+            except:
+                ret += self.default_map[t]
+        return ret
+
+    __call__ = format
 
 
 if __name__ == '__main__':
