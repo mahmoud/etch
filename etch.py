@@ -10,6 +10,7 @@ PEP 3101 and here: http://docs.python.org/2/library/string.html#format-specifica
 Python's str.format()-style formatting has the following deal-breakers:
 
 - raises KeyError when a key is not provided (e.g., '{x}'.format() )
+- no fallback behavior when a value fails to format/render
 - inconsistent feature support (2.6 doesn't support '{}'.format('hi'))
 
 There are pros and cons to doing it this way.
@@ -30,6 +31,7 @@ Cons:
 
 - Many features are still fairly obscure
 - Few escaping functions suitable to certain applications (XML/HTML/JS escapes)
+- No loops or conditionals
 """
 
 import re
