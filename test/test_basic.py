@@ -16,8 +16,10 @@ PFAT = namedtuple("PositionalFormatArgTest", "fstr arg_vals res")
 _PFATS = [PFAT('{} {} {}', ('hi', 'hello', 'bye'), "hi hello bye"),
           PFAT('{:d} {}', (1, 2), "1 2"),
           PFAT('{!s} {!r}', ('str', 'repr'), "str 'repr'"),
-          PFAT('{[hi]}, {.__name__!r}', ({'hi': 'hi'}, PFAT), "hi, %r" % PFAT.__name__),
-          PFAT('{{joek}} ({} {})', ('so', 'funny'), "{joek} (so funny)")]
+          PFAT('{{joek}} ({} {})', ('so', 'funny'), "{joek} (so funny)"),
+          PFAT('{[hi]}, {.__name__!r}',
+               ({'hi': 'hi'}, PFAT),
+               "hi, %r" % PFAT.__name__)]
 
 
 def test_pos_infer():

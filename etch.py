@@ -1,8 +1,39 @@
 # -*- coding: utf-8 -*-
+"""
+Etch
+~~~~
+
+Etch aims to be a minimalist string templating framework, ostensibly
+built on Python's advanced string formatting functionality, as described in
+PEP 3101 and here: http://docs.python.org/2/library/string.html#format-specification-mini-language
+
+Python's str.format()-style formatting has the following deal-breakers:
+
+- raises KeyError when a key is not provided (e.g., '{x}'.format() )
+- inconsistent feature support (2.6 doesn't support '{}'.format('hi'))
+
+There are pros and cons to doing it this way.
+
+Pros:
+
+- Small/single-file library
+- Uses the built-in Python format string parser (which is C, ostensibly fast)
+- Familiar syntax and featureset
+
+Cons:
+
+- Actual rendering is still Python, not the fastest, but fast enough
+- Python's new-style string formatting is idiosyncratic at best
+
+  - Lackluster error reporting
+  - Not very extensible
+
+- Many features are still fairly obscure
+- Few escaping functions suitable to certain applications (XML/HTML/JS escapes)
+"""
 
 import re
 from string import Formatter
-from collections import namedtuple
 
 
 _pos_farg_re = re.compile('({{)|'         # escaped open-brace
@@ -153,3 +184,9 @@ class BaseFormatField(object):
 
     def __str__(self):
         return self.fstr
+
+
+if __name__ == '__main__':
+    x = tokenize_format_str('hi {thing!z}')
+    print x
+    import pdb;pdb.set_trace()
